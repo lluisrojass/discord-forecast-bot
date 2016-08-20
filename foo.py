@@ -1,8 +1,7 @@
 #! usr/local/bin/env python3
 
-# fix the bloddy bad variable names
-# implement asyncio lib
-# refactor this mess
+# TODO: implement aiohttp lib
+
 
 import json
 import requests
@@ -15,38 +14,87 @@ import urllib.error as error
 
 yql_commands = {
     "constraints":"&limit 1&format=json",
+    #TODO do not fetch * but fetch jst woeid
     "woeid":"q=SELECT * from geo.places where text=",
     "forecast":"q=SELECT * from weather.forecast where woeid=",
     "host":"https://query.yahooapis.com/v1/public/yql?"
 }
 
-def get_weather(woeid):
-    host = yql_commands['host']
-    url = parse.quote((yql_commands["forecast"]+"{}"+yql_commands['constraints']).format(woeid),safe="&=*")
-    query_string = host + url
-    r = requests.request("GET",query_string)
-    data = r.json()
-    if not 'results' in data['query']:
-        raise KeyError('query contains no results')
-        return
-    else:
-        return data
 
-def get_woeid(zip):
-    url = parse.quote((yql_commands["woeid"]+"{}"+yql_commands["constraints"]).format(zip),safe="&=*")
-    query_string = yql_commands['host'] + url
-    try:
+def get_forecast(location_text):
+
+    # throws assertion exception if results is None
+    # throws requests.ConnectionError if connection failed
+    # throws TypeError if 'woeid not'
+    # admin2: information on County, Province, Parish, Department, District
+    # admin3: information on Commune, Municipality, District, Ward.
+
+    def get_woeid(zip):
+        url = parse.quote((yql_commands["woeid"]+"'{}'"+yql_commands["constraints"]).format(zip),safe="&=*")
+        query_string = yql_commands['host'] + url
+
+        #will throw requests.ConnectionError if failed connection
         r = requests.request("GET",query_string)
-    except requests.ConnectionError as e:
-        raise e
 
-    data = r.json()
+        # will NOT throw TypeError
+        results = r.json()['query']['results']
+        assert results != None
+
+        # will NOT throw TypeError if assertion passed
+        woeid = results['place'][0]['woeid']
+        return woeid
+
+
+    def get_weatherinfo(woeid):
+        host = yql_commands['host']
+        url = parse.quote((yql_commands["forecast"]+"{}"+yql_commands['constraints']).format(woeid),safe="&=*")
+        query_string = host + url
+
+        r = requests.request("GET",query_string)
+        results = r.json()['query']['results']
+
+        # user input either too vague or extremely mispelled
+        assert results != None
+
+        return results
+
+
+
     try:
-        woeid = data['query']['results']['place'][0]['woeid']
-    except TypeError:
-        print("zip code not resolved")
-    print(woeid)
-    return woeid
+        w = get_woeid(location_text)
+    except requests.ConnectionError as e:
+        return "Error when connecting to YQL DB, {}".format(e)
+    except AssertionError as e:
+        return "No Results Found when fetching WOEID"
+    except TypeError as e:
+        return "TYPEERROR Found when fetching WOEID"
+
+    print("WOEID FOR WELLINGTON: " +  w)
+
+    try:
+        raw_weather = get_weatherinfo(w)
+    except requests.ConnectionError as e:
+        return "Error when connecting to YQL DB, {}".format(e)
+    except AssertionError as e:
+        return "No Results Found when fetching weather information"
+    except TypeError as e:
+        return "TYPEERROR Found when fetching weather information"
+
+
+    return raw_weather
+
+
+
+
+
+
+
+
+
+
+
+
+#TODO fix formatting of text
 
 # def resolve_information(weather_data: dict):
 #     u_distance,u_speed,u_temp,u_pressure = ""
@@ -73,11 +121,5 @@ def get_woeid(zip):
 #     if 'forecast' in
 
 
-try:
-    w = get_woeid("1454561")
-except KeyError as k:
-    print(k.__str__())
-
-f = get_weather(w)
-print(f)
-
+w = get_forecast("Wellington")
+print(w)
