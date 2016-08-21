@@ -7,7 +7,7 @@ import json
 import requests
 import urllib.parse as parse
 import urllib.error as error
-
+import time
 # code value translates to position on array
 
 
@@ -21,15 +21,13 @@ yql_commands = {
 }
 
 
-def get_forecast(location_text):
+def get_forecast(location_text: str):
 
     # throws assertion exception if results is None
     # throws requests.ConnectionError if connection failed
     # throws TypeError if 'woeid not'
-    # admin2: information on County, Province, Parish, Department, District
-    # admin3: information on Commune, Municipality, District, Ward.
 
-    def get_woeid(zip):
+    def get_woeid(zip: str):
         url = parse.quote((yql_commands["woeid"]+"'{}'"+yql_commands["constraints"]).format(zip),safe="&=*")
         query_string = yql_commands['host'] + url
 
@@ -53,11 +51,80 @@ def get_forecast(location_text):
         r = requests.request("GET",query_string)
         results = r.json()['query']['results']
 
-        # user input either too vague or extremely mispelled
+        # user input either too vague or very mispelled
         assert results != None
 
         return results
 
+    #TODO fix formatting of text
+
+    def resolve_information(weather_data: dict):
+
+        if 'channel' in weather_data:
+            channel = weather_data['channel']
+            title = channel['title']
+
+            # unit information
+            #TODO bake unit demands into query string instead of wasting time extracting
+            if 'units' in channel:
+                units = channel['units']
+                units_distance = units['distance'] if 'distance' in units else ''
+                units_pressure = units['pressure'] if 'pressure' in units else ''
+                units_speed = units['speed'] if 'speed' in units else ''
+                units_temp = units['temperature'] if 'temperature' in units else ''
+
+            if 'wind' in channel:
+                wind = channel['wind']
+                wind_speed = wind['speed'] if 'speed' in wind else 'N/A'
+                wind_chill = wind['speed'] if 'speed' in wind else 'N/A'
+                wind_chill = wind['chill'] if 'high' in wind else 'N/A'
+
+            if 'atmosphere' in channel:
+                atmosphere = channel['atmosphere']
+                humidity = atmosphere['humidity'] if 'humidity' in atmosphere else 'N/A'
+                pressure = atmosphere['pressure'] if 'pressure' in atmosphere else 'N/A'
+                #TODO find out what rising is
+                visibility = atmosphere['visibility'] if 'visibility' in atmosphere else 'N/A'
+
+            if 'astronomy' in channel:
+                astronomy = channel['astronomy']
+                sunrise = astronomy['sunrise'] if 'sunrise' in astronomy else 'N/A'
+                sunset = astronomy['sunset'] if 'sunset' in astronomy else 'N/A'
+
+            if 'item' in channel:
+                item = channel['item']
+
+                # current condition information
+                if 'condition' in item:
+                    condition = item['condition']
+                    current_status = condition['text'] if 'text' in condition else 'N/A'
+                    current_date = condition['date'] if 'date' in condition else 'N/A'
+                    current_temp = condition['temp'] if 'temp' in condition else 'N/A'
+                else:
+                    print("No condition information available")
+
+                # today's forecast
+                if 'forecast' in item:
+                    forecast = item['forecast'][0]
+                    forecast_status = forecast['text'] if 'text' in forecast else 'N/A'
+                    forecast_date = forecast['date'] if 'date' in forecast else 'N/A'
+                    forecast_day = forecast['day'] if 'day' in forecast else 'N/A'
+                    forecast_tlow = forecast['low'] if 'low' in forecast else 'N/A'
+                    forecast_thigh = forecast['high'] if 'high' in forecast else 'N/A'
+                    forecast = item['forecast'][1]
+                    tom_status = forecast['text'] if 'text' in forecast else 'N/A'
+                    tom_date = forecast['date'] if 'date' in forecast else 'N/A'
+                    tom_day = forecast['day'] if 'day' in forecast else 'N/A'
+                    tom_tlow = forecast['low'] if 'low' in forecast else 'N/A'
+                    tom_thigh = forecast['high'] if 'high' in forecast else 'N/A'
+
+
+        print('{0} ({1})'.format(title,current_date))
+        print('Current Conditions:')
+        print('{0} at {1} {2}'.format(current_status,current_temp,units_temp))
+        print('--------------------')
+        print('Today\'s Forecast:')
+        print('')
 
 
     try:
@@ -69,8 +136,6 @@ def get_forecast(location_text):
     except TypeError as e:
         return "TYPEERROR Found when fetching WOEID"
 
-    print("WOEID FOR WELLINGTON: " +  w)
-
     try:
         raw_weather = get_weatherinfo(w)
     except requests.ConnectionError as e:
@@ -79,6 +144,11 @@ def get_forecast(location_text):
         return "No Results Found when fetching weather information"
     except TypeError as e:
         return "TYPEERROR Found when fetching weather information"
+
+    a = time.time()
+    resolve_information(raw_weather)
+    b = time.time()
+    print('{}'.format(b-a))
 
 
     return raw_weather
@@ -89,37 +159,4 @@ def get_forecast(location_text):
 
 
 
-
-
-
-
-
-#TODO fix formatting of text
-
-# def resolve_information(weather_data: dict):
-#     u_distance,u_speed,u_temp,u_pressure = ""
-#     current_status,current_date = ""
-#     title = ""
-#     title = weather_data['title'] if 'title' in weather_data else ""
-#
-#     curr_object = None
-#     if 'channel' in weather_data:
-#         curr_object = weather_data['channel']
-#         u_distance = curr_object['distance'] if 'distance' in channel else ''
-#         u_pressure = channel['pressure'] if 'pressure' in channel else ''
-#         U_speed = channel['speed'] if 'speed' in channel else ''
-#         u_temp = channel['temperature'] if 'temperature' in channel else ''
-#
-#
-#
-#     # current weather condition
-#     if 'condition' in weather_data:
-#         condition = weather_data['condition']
-#         code = condition['code'] if 'code' in condition else ''
-#         current_status = condition['text'] if 'text' in condition AND else 'N/A'
-#         current_date = condition['date'] if 'date' in condition else 'N/A'
-#     if 'forecast' in
-
-
-w = get_forecast("Wellington")
-print(w)
+w = get_forecast("bournemouth")
