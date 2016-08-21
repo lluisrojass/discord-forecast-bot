@@ -63,7 +63,6 @@ def get_forecast(location_text: str):
         if 'channel' in weather_data:
             channel = weather_data['channel']
             title = channel['title']
-
             # unit information
             #TODO bake unit demands into query string instead of wasting time extracting
             if 'units' in channel:
@@ -72,37 +71,28 @@ def get_forecast(location_text: str):
                 units_pressure = units['pressure'] if 'pressure' in units else ''
                 units_speed = units['speed'] if 'speed' in units else ''
                 units_temp = units['temperature'] if 'temperature' in units else ''
-
             if 'wind' in channel:
                 wind = channel['wind']
                 wind_speed = wind['speed'] if 'speed' in wind else 'N/A'
-                wind_chill = wind['speed'] if 'speed' in wind else 'N/A'
-                wind_chill = wind['chill'] if 'high' in wind else 'N/A'
-
+                wind_chill = wind['chill'] if 'chill' in wind else 'N/A'
             if 'atmosphere' in channel:
                 atmosphere = channel['atmosphere']
                 humidity = atmosphere['humidity'] if 'humidity' in atmosphere else 'N/A'
                 pressure = atmosphere['pressure'] if 'pressure' in atmosphere else 'N/A'
                 #TODO find out what rising is
                 visibility = atmosphere['visibility'] if 'visibility' in atmosphere else 'N/A'
-
             if 'astronomy' in channel:
                 astronomy = channel['astronomy']
                 sunrise = astronomy['sunrise'] if 'sunrise' in astronomy else 'N/A'
                 sunset = astronomy['sunset'] if 'sunset' in astronomy else 'N/A'
-
             if 'item' in channel:
                 item = channel['item']
-
                 # current condition information
                 if 'condition' in item:
                     condition = item['condition']
                     current_status = condition['text'] if 'text' in condition else 'N/A'
                     current_date = condition['date'] if 'date' in condition else 'N/A'
                     current_temp = condition['temp'] if 'temp' in condition else 'N/A'
-                else:
-                    print("No condition information available")
-
                 # today's forecast
                 if 'forecast' in item:
                     forecast = item['forecast'][0]
@@ -120,13 +110,18 @@ def get_forecast(location_text: str):
 
 
         print('{0} ({1})'.format(title,current_date))
-        print('Current Conditions:')
-        print('{0} at {1} {2}'.format(current_status,current_temp,units_temp))
-        print('--------------------')
-        print('Today\'s Forecast:')
-        print('')
+        print('Current Conditions: {0} at {1} {2}'.format(current_status,current_temp,units_temp))
+        print('--------------------------')
+        print('Forecast for {0} {1} (today):'.format(forecast_day,forecast_date))
+        print('Condition: {0}'.format(forecast_status))
+        print('High: {0}{2}  Low: {1}{2}'.format(forecast_thigh,forecast_tlow,units_temp))
+        print('Wind Speed: {0}{2}  Wind Chill: {1}{3}'.format(wind_speed,wind_chill,units_speed,units_temp))
+        print('Sunrise: {0}  Sunset: {1} '.format(sunrise,sunset))
+        print('Pressure: {0}{1} Humidity: {2}% Visibility: {3}{4}'.format(pressure,units_pressure,humidity,visibility,units_distance))
 
 
+
+    a = time.time()
     try:
         w = get_woeid(location_text)
     except requests.ConnectionError as e:
@@ -145,7 +140,7 @@ def get_forecast(location_text: str):
     except TypeError as e:
         return "TYPEERROR Found when fetching weather information"
 
-    a = time.time()
+
     resolve_information(raw_weather)
     b = time.time()
     print('{}'.format(b-a))
