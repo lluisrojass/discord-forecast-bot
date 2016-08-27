@@ -2,8 +2,11 @@
 
 import discord
 import _token # to hide token
-client = discord.Client()
+import weather
+import discord.ext.commands as c
 
+#bot = c.Bot(command_prefix='?',description='Bot to provide weather information based on provided location')
+client = discord.Client()
 @client.event
 async def on_ready():
     print('Logged in as')
@@ -11,17 +14,16 @@ async def on_ready():
     print(client.user.id)
     print('------')
 
-
-
+#TODO convert to event
 @client.event
 async def on_message(message):
     # check if messsage is from bot
     if (message.author == client.user):
         return
-    if (message.content.startswith("!forecast")):
-        zipcode = message.content.strip("!forecast ")
-        await client.send_message(message.channel,zipcode)
 
+    if (message.content.startswith("!forecast")):
+        location = (message.content.lstrip("!forecast")).strip()
+        await client.send_message(message.channel,weather.get_forecast(location))
 
 
 client.run(_token.get_token())
