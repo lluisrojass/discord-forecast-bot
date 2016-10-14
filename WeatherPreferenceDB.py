@@ -1,13 +1,14 @@
 import sqlite3 as s
 import sys
-
+import discord
 
 class Database:
 
     def __init__(self):
-        self.con = s.connect("Preference.db")
+        self.con = s.connect("WeatherPreference.db")
         self.server_id = ""
         self.cursor = None
+        #self.connect(ctx.message.server.id)
 
     def connect(self, server_id):
         self.server_id = server_id
@@ -19,7 +20,7 @@ class Database:
                                 "location TEXT,"
                                 "times_requested INT)", (server_id, ))
 
-    def create_preference(self, user_name, user_id, location):
+    def create_preference(self, ctx):
         with self.con:
             times_requested = self.cursor.execute("SELECT times_requested FROM ? where user_id = ?",
                                                   (self.server, user_id))
