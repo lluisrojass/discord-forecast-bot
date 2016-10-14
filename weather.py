@@ -49,7 +49,8 @@ def _get_woeid(place: str):
 
     return results['place']['woeid']  # potentially throwing  KeyError due to unpredictable result structure
 
-def _get_weatherinfo(woeid: str,metric_units: bool):
+
+def _get_weatherinfo(woeid: str, metric_units: bool):
 
     """
     :param woeid: id for finding weather
@@ -145,7 +146,7 @@ def _format_data(weather_data: dict, units: dict):
                                              line, forecast_today, forecast_tomorrow, forecast_threeday)
 
 
-def get_forecast(location_text: str, metric_units=False):
+def get_forecast(location_text: str, metric_units: bool):
     units = unit_system['metric'] if metric_units is True else unit_system['imperial']
 
     try:

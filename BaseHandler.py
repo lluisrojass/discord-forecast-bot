@@ -2,14 +2,16 @@
 
 import discord
 import hidetoken  # hide token
-import weather
+import Weather
 import discord.ext.commands as c
 import asyncio
+import WeatherPreferenceDB
 
 
 messages_to_delete = []
 
-bot = c.Bot(command_prefix='>>',command_not_found="No command named {} found.",description='Weather & Forecast Bot',pm_help=True)
+bot = c.Bot(command_prefix='>>', command_not_found="No command named {} found.",
+            description='Weather & Forecast Bot', pm_help=True)
 
 
 @bot.event
@@ -39,16 +41,18 @@ async def forecast(ctx, *input_string: tuple):
     forecast.weather_message = ''
     # pre weather request vars
     forecast.channel = ctx.message.channel
+    forecast.is_pming = False
     # weather request editing vars
     forecast.is_metric = False
     # post weather request vars
+    forecast.is_saving = False
 
     async def save():
-        await makeshortcut(ctx.message.author)
+        forecast.is_saving = True
     async def metric():
         forecast.is_metric = True
     async def private_message():
-        await bot.say("@{} weather has been sent to your personal messages".format(ctx.message.author), delete_after=3.5)
+        forecast.is_pming = True
         forecast.channel = ctx.message.author
 
     def invalid_flag():
@@ -71,13 +75,23 @@ async def forecast(ctx, *input_string: tuple):
             else:
                 location_string += "{} ".format(word)
 
-    forecast.weather_message += weather.get_forecast(location_string, forecast.is_metric)
+    if forecast.is_saving:
+        await make_shortcut(ctx, location_string)
+    if forecast.is_pming:
+        await bot.say("@{} weather has been sent to your personal messages".format(ctx.message.author))
+    forecast.weather_message += Weather.get_forecast(location_string, forecast.is_metric)
     msg = await bot.send_message(forecast.channel, forecast.weather_message)
     messages_to_delete.append(msg)
 
 
-async def makeshortcut(user : discord.Member):
-    pass
+async def make_shortcut(ctx, location_string: str):
+    database = WeatherPreferenceDB.Database()
+    print(location_string)
+    print(ctx.message.author.id)
+    if database.create_preference(ctx, location_string):
+        await bot.say('preference has been saved')  # TODO: mention user
+    else:
+        await bot.say('preference has been updated')  # TODO: mention user
 
 bot.loop.create_task(cleanup())
 bot.run(hidetoken.get_token())
