@@ -50,7 +50,7 @@ def _get_woeid(place: str):
     return results['place']['woeid']  # potentially throwing  KeyError due to unpredictable result structure
 
 
-def _get_weatherinfo(woeid: str, metric_units: bool):
+def _get_weatherdata(woeid: str, metric_units: bool):
 
     """
     :param woeid: id for finding weather
@@ -59,7 +59,7 @@ def _get_weatherinfo(woeid: str, metric_units: bool):
 
     host = yql_commands['host']
     request_path = parse.quote(yql_commands['forecast_path'].format(woeid), safe="*")
-    # unit preference
+    # unit preference inserted
     request_path += (parse.quote(yql_commands['yql_delimiter'] + yql_commands['metric_units'])) if metric_units else ''
     # require JSON results
     request_path += yql_commands['url_delimiter'] + yql_commands['format']
@@ -72,8 +72,6 @@ def _get_weatherinfo(woeid: str, metric_units: bool):
     # user input either too vague or very misspelled
     assert results is not None
     return results
-
-# TODO: use decorators for exception catching
 
 
 def _format_data(weather_data: dict, units: dict):
@@ -133,7 +131,6 @@ def _format_data(weather_data: dict, units: dict):
                                                               units['temperature'])
         if 'atmosphere' in channel:
             atmosphere = channel['atmosphere']
-            # TODO find out what rising is
             forecast_today += 'Pressure: {0} {4} Humidity: {1}% ' \
                               'Visibility: {2} {3}\n'.format(atmosphere['pressure'], atmosphere['humidity'],
                                                              atmosphere['visibility'], units['distance'],
@@ -146,27 +143,39 @@ def _format_data(weather_data: dict, units: dict):
                                              line, forecast_today, forecast_tomorrow, forecast_threeday)
 
 
+def _validate_input(location: str):
+    for word in location.split(" "):
+        assert word.upper() not in ('SELECT', '*', 'ID', 'LOCATION', 'FROM', 'WHERE', 'UPDATE',
+                                    'USER_ID', 'TIMES_REQUESTED', 'NAME', 'WOEID', "WEATHER.FORECAST")
+
 def get_forecast(location_text: str, metric_units: bool):
+
     units = unit_system['metric'] if metric_units is True else unit_system['imperial']
 
+    # sql injection validation
+    try:
+        _validate_input(location_text)
+    except AssertionError:
+        return "Invalid Input."
+    # resolve WOEID from location_text
     try:
         woeid = _get_woeid(location_text)
     except AssertionError:
         return "No weather information available for the provided location, location may be too vague."
     except (KeyError, TypeError):
-        return "Error encountered resolving WOEID."
+        return "Unable to resolve location to Id."
     except requests.ConnectionError:
         return "Unable to reach Yahoo! Weather."
-
+    # resolve weather from WOEID
     try:
-        raw_weather = _get_weatherinfo(woeid, metric_units)
+        raw_weather = _get_weatherdata(woeid, metric_units)
     except AssertionError:
         return "No weather information received, location may be too vague. "
     except TypeError:
         return "Error fetching weather information"
     except requests.ConnectionError:
         return "Unable to reach Yahoo! Weather."
-
+    # format weather JSON
     try:
         final_string = _format_data(raw_weather, units)
     except KeyError:
