@@ -2,6 +2,8 @@
 
 import requests
 import urllib.parse as parse
+from Errors import WeatherException
+from Errors import create_error_handler
 
 yql_commands = {
     'host': 'https://query.yahooapis.com/v1/public/yql?q=',
@@ -31,9 +33,8 @@ unit_system = {
 
 def _get_woeid(place: str):
     """
-     WOEID is Yahoo's own location identifier, due to YQL limitations
-     forecast queries require either a WOEID or a location.
-    :param place: identifier given to the bot to denote location
+     WOEID is Yahoo's own location identifier.
+    :param place: location identifier
     :return: best guess WOEID based on place
     """
 
@@ -45,12 +46,13 @@ def _get_woeid(place: str):
     r = requests.get(query_string)  # throws requests.ConnectionError
     results = r.json()['query']['results']
 
-    assert results is not None
+    if results is None:
+        raise WeatherException("No weather information available for the provided location, location may be too vague.")
 
-    return results['place']['woeid']  # potentially throwing  KeyError due to unpredictable result structure
+    return results['place']['woeid']
 
 
-def _get_weatherdata(woeid: str, metric_units: bool):
+def _get_weather_data(woeid: str, metric_units: bool):
 
     """
     :param woeid: id for finding weather
@@ -70,7 +72,8 @@ def _get_weatherdata(woeid: str, metric_units: bool):
     results = r.json()['query']['results']
 
     # user input either too vague or very misspelled
-    assert results is not None
+    if results is None:
+        raise WeatherException("No weather information received, location may be too vague.")
     return results
 
 
@@ -148,40 +151,27 @@ def _validate_input(location: str):
         assert word.upper() not in ('SELECT', '*', 'ID', 'LOCATION', 'FROM', 'WHERE', 'UPDATE',
                                     'USER_ID', 'TIMES_REQUESTED', 'NAME', 'WOEID', "WEATHER.FORECAST")
 
+
 def get_forecast(location_text: str, metric_units: bool):
 
-    units = unit_system['metric'] if metric_units is True else unit_system['imperial']
+    weather = ''
 
-    # sql injection validation
-    try:
+    # error handlers
+    http_handler = create_error_handler((WeatherException, requests.ConnectionError), WeatherException)
+    format_handler = create_error_handler((TypeError, KeyError), WeatherException)
+    injection_handler = create_error_handler(AssertionError, WeatherException)
+    # units
+    units = unit_system['metric'] if metric_units else unit_system['imperial']
+
+    with injection_handler():
         _validate_input(location_text)
-    except AssertionError:
-        return "Invalid Input."
-    # resolve WOEID from location_text
-    try:
+    with http_handler():
         woeid = _get_woeid(location_text)
-    except AssertionError:
-        return "No weather information available for the provided location, location may be too vague."
-    except (KeyError, TypeError):
-        return "Unable to resolve location to Id."
-    except requests.ConnectionError:
-        return "Unable to reach Yahoo! Weather."
-    # resolve weather from WOEID
-    try:
-        raw_weather = _get_weatherdata(woeid, metric_units)
-    except AssertionError:
-        return "No weather information received, location may be too vague. "
-    except TypeError:
-        return "Error fetching weather information"
-    except requests.ConnectionError:
-        return "Unable to reach Yahoo! Weather."
-    # format weather JSON
-    try:
-        final_string = _format_data(raw_weather, units)
-    except KeyError:
-        return "Error resolving weather data."
+        raw_weather = _get_weather_data(woeid, metric_units)
+    with format_handler():
+        weather = _format_data(raw_weather, units)
 
-    return final_string
+    return weather
 
 
 

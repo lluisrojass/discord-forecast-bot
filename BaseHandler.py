@@ -1,12 +1,14 @@
 #! usr/local/bin/env python3
 # -*- coding: utf-8 -*-
 
-import hidetoken  # hide token
+import hidetoken  # to hide token
 import Weather
 import discord.ext.commands as c
 import asyncio
 import WeatherPreferenceDB
-
+import sys
+from Errors import WeatherException
+from Errors import DatabaseException
 
 messages_to_delete = []
 
@@ -40,7 +42,7 @@ async def cleanup():
                                 "Can invoke >>me to receive user specific weather.\n",
              pass_context=True)
 async def forecast(ctx, *input_string: tuple):
-    location_string = ''
+    location = ''
     forecast.weather_message = ''
     # pre weather request vars
     forecast.channel = ctx.message.channel
@@ -57,7 +59,6 @@ async def forecast(ctx, *input_string: tuple):
         forecast.is_metric = True
     async def private_message():
         forecast.is_pming = True
-        forecast.channel = ctx.message.author
 
     def invalid_flag():
         forecast.is_invalid = True
@@ -76,16 +77,20 @@ async def forecast(ctx, *input_string: tuple):
             if word[0] == "-":
                 invalid_flag()
             else:
-                location_string += "{} ".format(word)
+                location += "{} ".format(word)
 
-    forecast.weather_message += Weather.get_forecast(location_string, forecast.is_metric)
+    try:
+        forecast.weather_message += Weather.get_forecast(location, forecast.is_metric)
+    except WeatherException:
+        forecast.weather_message += '**Error Fetching Weather**: {0}'.format(sys.exc_info()[1])
 
     if forecast.is_pming:
+        forecast.channel = ctx.message.author
         pm_msg = await bot.say("{} weather has been sent to your personal messages".format(ctx.message.author.mention))
         messages_to_delete.append(pm_msg)
 
     if forecast.is_saving:
-        forecast.weather_message += make_shortcut(ctx, location_string)
+        forecast.weather_message += make_shortcut(ctx, location)
 
     if forecast.is_invalid_flag:
         forecast.weather += ":warning:**Flag(s) identified but not resolved." \
@@ -96,28 +101,27 @@ async def forecast(ctx, *input_string: tuple):
 
 
 @bot.command(enabled=True, pass_context=True)
-async def me(ctx, *flags):
-    database = WeatherPreferenceDB.Database()
-    database.connect(ctx.message.server.id)
+async def me(ctx):
+    database = WeatherPreferenceDB.Database(ctx.message.server.id)
     location = database.get_preference(ctx.message.author.id)
     Weather.get_forecast(location, False)
 
 async def make_shortcut(ctx, location_string: str):
-    return_string = "Unknown Error saving preference"
-    database = WeatherPreferenceDB.Database()
-    database.connect(ctx.message.server.id)
-    outcome = database.create_preference(ctx.message.author.name, ctx.message.author.id, location_string)
 
-    if outcome is 0:
-        return_string = "Invalid location, preference not saved."
-    elif outcome is 1:
-        return_string = "Location preference updated, invoke >>me for personalized weather."
-    elif outcome is 2:
-        return_string = "Location preference stored, invoke >>me for personalized weather."
-    elif outcome is 3:
-        return_string = "Invalid connection to database, preference not saved."
+    response = "Unknown Error saving preference"
+    database = WeatherPreferenceDB.Database(ctx.message.server.id)
 
-    return ":warning:**{}**:warning:".format(return_string)
+    try:
+        outcome = database.create_preference(ctx.message.author.name, ctx.message.author.id, location_string)
+    except DatabaseException:
+        response = "Error saving preference: {}".format(sys.exc_info()[1])
+    else:
+        if outcome:
+            response = "Location preference stored, invoke >>me for personalized weather."
+        else:
+            response = "Location preference updated, invoke >>me for personalized weather."
+
+    return ":warning:**{}**:warning:".format(response)
 
 bot.loop.create_task(cleanup())
 bot.run(hidetoken.get_token())
