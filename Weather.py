@@ -1,9 +1,10 @@
 #! usr/local/bin/env python3
+# -*- coding: utf-8 -*-
 
 import requests
 import urllib.parse as parse
-from Errors import WeatherException
 from Errors import create_error_handler
+from Errors import WeatherException
 
 yql_commands = {
     'host': 'https://query.yahooapis.com/v1/public/yql?q=',
@@ -56,7 +57,7 @@ def _get_weather_data(woeid: str, metric_units: bool):
 
     """
     :param woeid: id for finding weather
-    :return: weather information dictionary
+    :return: weather information dict
     """
 
     host = yql_commands['host']
@@ -129,13 +130,13 @@ def _format_data(weather_data: dict, units: dict):
 
         if 'wind' in channel:
             wind = channel['wind']
-            forecast_today += "Wind Speed: {0} {2}" \
-                              " Wind Chill: {1} {3}\n".format(wind['speed'], wind['chill'], units['speed'],
+            forecast_today += "Wind Speed: {0} {2} " \
+                              "Wind Chill: {1} {3}\n".format(wind['speed'], wind['chill'], units['speed'],
                                                               units['temperature'])
         if 'atmosphere' in channel:
             atmosphere = channel['atmosphere']
-            forecast_today += 'Pressure: {0} {4} Humidity: {1}% ' \
-                              'Visibility: {2} {3}\n'.format(atmosphere['pressure'], atmosphere['humidity'],
+            forecast_today += "Pressure: {0} {4} Humidity: {1}% " \
+                              "Visibility: {2} {3}\n".format(atmosphere['pressure'], atmosphere['humidity'],
                                                              atmosphere['visibility'], units['distance'],
                                                              units['pressure'])
         if 'astronomy' in channel:
@@ -160,7 +161,7 @@ def get_forecast(location_text: str, metric_units: bool):
     http_handler = create_error_handler((WeatherException, requests.ConnectionError), WeatherException)
     format_handler = create_error_handler((TypeError, KeyError), WeatherException)
     injection_handler = create_error_handler(AssertionError, WeatherException)
-    # units
+
     units = unit_system['metric'] if metric_units else unit_system['imperial']
 
     with injection_handler():

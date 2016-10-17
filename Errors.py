@@ -1,3 +1,6 @@
+#! usr/local/bin/env python3
+# -*- coding: utf-8 -*-
+
 from contextlib import contextmanager
 import sys
 
@@ -5,7 +8,6 @@ import sys
 class WeatherException(Exception):
     def __init__(self, message):
         super(WeatherException, self).__init__(message)
-
 
 
 class DatabaseException(Exception):

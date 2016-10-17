@@ -1,11 +1,11 @@
 #! usr/local/bin/env python3
 # -*- coding: utf-8 -*-
 
-import hidetoken  # to hide token
+import Hidetoken  # to hide token from public github
 import Weather
 import discord.ext.commands as c
 import asyncio
-import WeatherPreferenceDB
+import PreferenceDatabase
 import sys
 from Errors import WeatherException
 from Errors import DatabaseException
@@ -42,6 +42,8 @@ async def cleanup():
                                 "Can invoke >>me to receive user specific weather.\n",
              pass_context=True)
 async def forecast(ctx, *input_string: tuple):
+    bot.type()
+    mssg = ''
     location = ''
     forecast.weather_message = ''
     # pre weather request vars
@@ -51,17 +53,19 @@ async def forecast(ctx, *input_string: tuple):
     forecast.is_pming = False
     # post weather request vars
     forecast.is_saving = False
-    forecast.is_invalid_flag = False
+    forecast.is_flag_invalid = False
 
-    async def save():
+    def save():
         forecast.is_saving = True
-    async def metric():
+
+    def metric():
         forecast.is_metric = True
-    async def private_message():
+
+    def private_message():
         forecast.is_pming = True
 
     def invalid_flag():
-        forecast.is_invalid = True
+        forecast.is_flag_invalid = True
 
     flags = {
         "-save": save,
@@ -90,11 +94,11 @@ async def forecast(ctx, *input_string: tuple):
         messages_to_delete.append(pm_msg)
 
     if forecast.is_saving:
-        forecast.weather_message += make_shortcut(ctx, location)
+        forecast.weather_message += make_shortcut(ctx, location, forecast.is_metric)
 
-    if forecast.is_invalid_flag:
-        forecast.weather += ":warning:**Flag(s) identified but not resolved." \
-                            " Invoke >>help to view all flags**:warning:"
+    if forecast.is_flag_invalid:
+        forecast.weather_message += "\n:warning:**Flag(s) identified but not resolved." \
+                                    " Invoke >>help to view all flags**"
 
     msg = await bot.send_message(forecast.channel, forecast.weather_message)
     messages_to_delete.append(msg)
@@ -102,17 +106,26 @@ async def forecast(ctx, *input_string: tuple):
 
 @bot.command(enabled=True, pass_context=True)
 async def me(ctx):
-    database = WeatherPreferenceDB.Database(ctx.message.server.id)
-    location = database.get_preference(ctx.message.author.id)
-    Weather.get_forecast(location, False)
+    weather_message = ":warning: **No Preference Saved for {}.**".format(ctx.message.author.mention)
+    database = PreferenceDatabase.Database(ctx.message.server.id)
+    try:
+        location, is_metric = database.get_preference(ctx.message.author.id)
+    except DatabaseException:
+        pass
+    else:
+        weather_message = Weather.get_forecast(location, is_metric)
+    del database
 
-async def make_shortcut(ctx, location_string: str):
+    await bot.whisper(weather_message)
 
-    response = "Unknown Error saving preference"
-    database = WeatherPreferenceDB.Database(ctx.message.server.id)
+
+def make_shortcut(ctx, location_string: str, is_metric):
+
+    response = "Unknown Error saving preference."
+    database = PreferenceDatabase.Database(ctx.message.server.id)
 
     try:
-        outcome = database.create_preference(ctx.message.author.name, ctx.message.author.id, location_string)
+        outcome = database.create_preference(ctx.message.author.name, ctx.message.author.id, location_string, is_metric)
     except DatabaseException:
         response = "Error saving preference: {}".format(sys.exc_info()[1])
     else:
@@ -121,7 +134,8 @@ async def make_shortcut(ctx, location_string: str):
         else:
             response = "Location preference updated, invoke >>me for personalized weather."
 
-    return ":warning:**{}**:warning:".format(response)
+    del database
+    return "\n:warning:**{}.**".format(response)
 
 bot.loop.create_task(cleanup())
-bot.run(hidetoken.get_token())
+bot.run(Hidetoken.get_token())
