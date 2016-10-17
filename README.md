@@ -1,4 +1,4 @@
-# Discord Weather Bot
+# Discord Weather Bot (4CAST)
 
 Invite this Bot to your server with [this link](https://discordapp.com/oauth2/authorize?client_id=220798987777605632&scope=bot&permissions=52224)!
 
