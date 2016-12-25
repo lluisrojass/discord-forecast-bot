@@ -11,8 +11,11 @@ Available Commands:
 Location indicator can be as vague as desired and accepted identifiers range from full addresses to national parks. 
 
 Optional flags: 
+
 -metric: To receive weather information in metric units instead of imperial units (default). 
+
 -pm: for receiving weather in personal messages instead of public server chat. 
+
 -save: To save or update location on server specific preference table, after preference is saved weather information can be expedited with a >>me command. Desired unit preference also saved.
 
 `>>me` Invoke to receive personalized weather based on saved location (server specific). 
