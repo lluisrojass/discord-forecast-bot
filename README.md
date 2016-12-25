@@ -1,8 +1,8 @@
 # Discord Weather Bot (4CAST)
 
-Invite this Bot to your server with [this link](https://discordapp.com/oauth2/authorize?client_id=220798987777605632&scope=bot&permissions=52224)!
+Invite 4CAST Bot to your server [here!](https://discordapp.com/oauth2/authorize?client_id=220798987777605632&scope=bot&permissions=52224)!
 
-Discord Bot to fetch & provide weather conditions and 3 day forecast when provided with location information. Weather information provided by Yahoo! using [YQL](https://developer.yahoo.com/yql/). written in Python 3.5, implements the [Discord.py](https://github.com/Rapptz/discord.py) API. 
+4CAST is a Discord Bot to fetch & provide weather conditions and 3 day forecast when provided with location information. Weather information provided by Yahoo! using [YQL](https://developer.yahoo.com/yql/). written in Python 3 and implements the [Discord.py](https://github.com/Rapptz/discord.py) API. 
 
 Available Commands:
 
@@ -10,7 +10,7 @@ Available Commands:
 
 Location indicator can be as vague as desired and accepted identifiers range from full addresses to national parks. 
 
-Optional flags: 
+**Optional flags**: 
 
 `-metric`: To receive weather information in metric units instead of imperial units (default). 
 
