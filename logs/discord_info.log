@@ -1,0 +1,28 @@
+2017-04-16 01:54:42,764:INFO:discord.handler: Forecast Request - User: NSFWJamieVardy User ID: 213378469730451457 Server Name: N/A Server ID: N/A Location: Maryland Flags: N/A
+2017-04-16 01:54:43,442:INFO:discord.handler: Forecast Retrieved - User: NSFWJamieVardy User ID: 213378469730451457 Server Name: N/A Server ID: N/A Location: Maryland Flags: N/A
+2017-04-16 01:54:54,920:INFO:discord.handler: Forecast Request - User: NSFWJamieVardy User ID: 213378469730451457 Server Name: N/A Server ID: N/A Location: Kingston Flags: s
+2017-04-16 01:54:55,183:INFO:discord.handler: Forecast Retrieved - User: NSFWJamieVardy User ID: 213378469730451457 Server Name: N/A Server ID: N/A Location: Kingston Flags: s
+2017-04-16 01:54:55,187:INFO:discord.handler: Weather preference created - User: NSFWJamieVardy User ID: 213378469730451457 Server Name: N/A Server ID: N/A Desired Location Update: Kingston
+2017-04-16 01:57:00,124:INFO:discord.handler: Forecast Request - User: NSFWJamieVardy User ID: 213378469730451457 Server Name: N/A Server ID: N/A Location: Maryland Flags: m
+2017-04-16 01:57:01,327:INFO:discord.handler: Forecast Retrieved - User: NSFWJamieVardy User ID: 213378469730451457 Server Name: N/A Server ID: N/A Location: Maryland Flags: m
+2017-04-16 01:58:37,549:INFO:discord.handler: Forecast Request - User: NSFWJamieVardy User ID: 213378469730451457 Server Name: N/A Server ID: N/A Location: sex Flags: N/A
+2017-04-16 01:58:38,440:INFO:discord.handler: Forecast Retrieved - User: NSFWJamieVardy User ID: 213378469730451457 Server Name: N/A Server ID: N/A Location: sex Flags: N/A
+2017-04-16 02:00:47,401:INFO:discord.handler: Me Request -User: NSFWJamieVardy User ID: 213378469730451457 Server Name: ludacris-speed Server ID: 213872875046830082 Location: Kingston Units: Imperial
+2017-04-16 02:01:20,323:INFO:discord.handler: Forecast Request - User: NSFWJamieVardy User ID: 213378469730451457 Server Name: ludacris-speed Server ID: 213872875046830082 Location: Kingston, NY Flags: ms
+2017-04-16 02:01:21,411:INFO:discord.handler: Forecast Retrieved - User: NSFWJamieVardy User ID: 213378469730451457 Server Name: ludacris-speed Server ID: 213872875046830082 Location: Kingston, NY Flags: ms
+2017-04-16 02:01:21,414:INFO:discord.handler: Weather preference updated - User: NSFWJamieVardy User ID: 213378469730451457 Server Name: ludacris-speed Server ID: 213872875046830082 Desired Location Update: Kingston, NY
+2017-04-16 02:11:47,502:INFO:discord.handler: Me Request -User: NSFWJamieVardy User ID: 213378469730451457 Server Name: ludacris-speed Server ID: 213872875046830082 Location: Kingston, NY Units: Metric
+2017-04-16 02:11:53,893:INFO:discord.handler: Me Request -User: NSFWJamieVardy User ID: 213378469730451457 Server Name: N/A Server ID: N/A Location: Kingston, NY Units: Metric
+2017-04-16 02:12:02,984:INFO:discord.handler: Forecast Request - User: NSFWJamieVardy User ID: 213378469730451457 Server Name: N/A Server ID: N/A Location: N/A Flags: s
+2017-04-16 02:12:03,624:INFO:discord.handler: Error Retrieving Weather (No Weather Results Returned) - User: NSFWJamieVardy User ID: 213378469730451457 Server Name: N/A Server ID: N/A Location: N/A Flags: s
+2017-04-16 02:12:12,210:INFO:discord.handler: Forecast Request - User: NSFWJamieVardy User ID: 213378469730451457 Server Name: N/A Server ID: N/A Location: asfasdasdasd- Flags: s
+2017-04-16 02:12:12,439:INFO:discord.handler: Error Retrieving Weather (No Weather Results for location "asfasdasdasd-") - User: NSFWJamieVardy User ID: 213378469730451457 Server Name: N/A Server ID: N/A Location: asfasdasdasd- Flags: s
+2017-04-16 02:12:37,681:INFO:discord.handler: Forecast Request - User: NSFWJamieVardy User ID: 213378469730451457 Server Name: N/A Server ID: N/A Location: asdafcomp Flags: m
+2017-04-16 02:12:37,900:INFO:discord.handler: Error Retrieving Weather (No Weather Results for location "asdafcomp") - User: NSFWJamieVardy User ID: 213378469730451457 Server Name: N/A Server ID: N/A Location: asdafcomp Flags: m
+2017-04-16 02:12:51,763:INFO:discord.handler: Forecast Request - User: NSFWJamieVardy User ID: 213378469730451457 Server Name: N/A Server ID: N/A Location: kingston Flags: msip
+2017-04-16 02:12:52,845:INFO:discord.handler: Forecast Retrieved - User: NSFWJamieVardy User ID: 213378469730451457 Server Name: N/A Server ID: N/A Location: kingston Flags: msip
+2017-04-16 02:12:52,847:INFO:discord.handler: Weather preference updated - User: NSFWJamieVardy User ID: 213378469730451457 Server Name: N/A Server ID: N/A Desired Location Update: kingston
+2017-04-16 02:31:01,579:INFO:discord.handler: Forecast Request - User: NSFWJamieVardy User ID: 213378469730451457 Server Name: ludacris-speed Server ID: 213872875046830082 Location: helen Flags: i
+2017-04-16 02:31:02,280:INFO:discord.handler: Forecast Retrieved - User: NSFWJamieVardy User ID: 213378469730451457 Server Name: ludacris-speed Server ID: 213872875046830082 Location: helen Flags: i
+2017-04-16 02:31:35,498:INFO:discord.handler: Forecast Request - User: NSFWJamieVardy User ID: 213378469730451457 Server Name: ludacris-speed Server ID: 213872875046830082 Location: helen Flags: i
+2017-04-16 02:31:36,217:INFO:discord.handler: Forecast Retrieved - User: NSFWJamieVardy User ID: 213378469730451457 Server Name: ludacris-speed Server ID: 213872875046830082 Location: helen Flags: i

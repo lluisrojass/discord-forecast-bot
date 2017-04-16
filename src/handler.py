@@ -96,16 +96,21 @@ async def forecast(ctx, *input_string: tuple):
     try:
         weather_msg += get_forecast(location, forecast.is_metric)
         logger.info(logger_text.format('Forecast Retrieved'))
+
         if forecast.is_pm:
             if is_from_server:
                 forecast.channel = ctx.message.author
                 await bot.say("Hey {}, weather information is being sent to your PMs.".format(ctx.message.author.mention))
+
         if forecast.is_saving: # only saves if no WeatherException caught, preventing useless saves
             notifications.append(':warning:**'+make_shortcut(ctx.message.author, ctx.message.server,  location, forecast.is_metric)+'**')
+
         if forecast.invalid_flag:
             notifications.append(":warning:**Flag(s) identified but not resolved. for all flags view github.com/lluisrojass/discord-weather-bot**")
+
         for m in notifications:
             weather_msg += m + '\n'
+
     except WeatherException:
         weather_msg += ':warning: {}'.format(sys.exc_info()[1])
         logger.info(logger_text.format('Error Retrieving Weather ({})'.format(sys.exc_info()[1])))
@@ -140,10 +145,6 @@ async def me(ctx):
 
 
 def make_shortcut(user, server, location, is_metric):
-    u = user.name
-    s = server.name if not isinstance(server,type(None)) else 'N/A'
-    i = server.id if not isinstance(server,type(None)) else 'N/A'
-
     is_from_server = not isinstance(server,type(None))
     logger_text = '{} - '+'User: {0} User ID: {1} Server Name: {2} Server ID: {3} Desired Location Update: {4}'.format(user.name,
                                                                                                        user.id,
