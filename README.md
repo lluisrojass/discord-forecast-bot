@@ -1,23 +1,28 @@
 # Discord Weather Bot (4CAST)
 
-Invite 4CAST Bot to your server [here](https://discordapp.com/oauth2/authorize?client_id=220798987777605632&scope=bot&permissions=52224)!
+## Invite
+Invite 4CAST Weather Bot to your server [here](https://discordapp.com/oauth2/authorize?client_id=220798987777605632&scope=bot&permissions=52224)
+## Description
+4CAST is a Discord Bot to fetch & provide weather conditions and 3 day forecast when provided with location information. Weather data is provided by Yahoo's [YQL](https://developer.yahoo.com/yql/) endpoint. Application implements the [Discord.py](https://github.com/Rapptz/discord.py) API to speak to your guild.
+## Commands
 
-4CAST is a Discord Bot to fetch & provide weather conditions and 3 day forecast when provided with location information. Weather information provided by Yahoo! using [YQL](https://developer.yahoo.com/yql/). written in Python 3 and implements the [Discord.py](https://github.com/Rapptz/discord.py) API. 
+```LiveScript
+>>forecast <location> [-metric] [-pm] [-save]
+```
+**Create a weather request based on `<location>`.**
 
-Available Commands:
+#### Flags
+`-metric` Request weather in metric units.
 
-`>>forecast location-indicator [<-metric>] [<-pm>] [<-save>]`
+`-pm` Receive results as a private messsage.
 
-Location indicator can be as vague as desired and accepted identifiers range from full addresses to national parks. 
+`-save` Save this request for expedited requesting with a `>>me` command.
 
-**Optional flags**: 
+```LiveScript
+>>me
+``` 
+**Invoke to receive personalized weather based on saved location (server independent).**
 
-*-metric*: Receive weather information in metric units instead of imperial units (default). 
+# Example
+![prototype](https://i.gyazo.com/75d89cd86e57a8602c6fccde67386c8f.gif)
 
-*-pm*: Receive weather in personal messages instead of public server chat. 
-
-*-save*: Save or update location on server specific db. After preference is saved weather information can be expedited with a >>me command. Desired unit preference also saved if present.
-
-`>>me` Invoke to receive personalized weather based on saved location (server specific). 
-
-`>>help` Invoke to receive help message with all commands and optional flags. Sent to personal messages. 
