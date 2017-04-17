@@ -13,13 +13,13 @@ unit_system = {
         'distance': 'mi',
         'pressure': 'in',
         'speed': 'mph',
-        'temperature': 'F'
+        'temp': 'F'
     },
     'metric': {
         'distance': 'km',
         'pressure': 'mb',
         'speed': 'km/h',
-        'temperature': 'C'
+        'temp': 'C'
     }
 }
 
@@ -129,7 +129,7 @@ def __format(location, yql_weather_results, unit_system):
                     except (ValueError, IndexError):
                         pass
                     current_conditions += ' '
-                    current_conditions += '{0} at {1}{2}'.format(condition['text'], condition['temp'], unit_system['temperature'])
+                    current_conditions += '{0} at {1}{2}'.format(condition['text'], condition['temp'], unit_system['temp'])
                 except KeyError:
                     current_conditions += 'Not Available.'
 
@@ -150,16 +150,16 @@ def __format(location, yql_weather_results, unit_system):
                     forecast_today += '{}'.format(forecast['text']) if 'text' in forecast else '*Not Available*'
                     forecast_today += ' '
                     forecast_today += 'high of '
-                    forecast_today += '{0}{1}'.format(forecast['high'], unit_system['temperature']) if 'high' in forecast.keys() else 'N/A'
+                    forecast_today += '{0}{1}'.format(forecast['high'], unit_system['temp']) if 'high' in forecast.keys() else 'N/A'
                     try:
-                        forecast_today += '{0}'.format(__temp_emoji(int(forecast['high']), unit_system['temperature'] == 'C')) if 'high' in forecast.keys() else ''
+                        forecast_today += '{0}'.format(__temp_emoji(int(forecast['high']), unit_system['temp'] == 'C')) if 'high' in forecast.keys() else ''
                     except ValueError:
                         pass
                     forecast_today += ' & '
                     forecast_today += 'low of '
-                    forecast_today += '{0}{1}'.format(forecast['low'], unit_system['temperature']) if 'low' in forecast.keys() else 'N/A'
+                    forecast_today += '{0}{1}'.format(forecast['low'], unit_system['temp']) if 'low' in forecast.keys() else 'N/A'
                     try:
-                        forecast_today += '{0}'.format(__temp_emoji(int(forecast['low']), unit_system['temperature'] == 'C')) if 'low' in forecast.keys() else ''
+                        forecast_today += '{0}'.format(__temp_emoji(int(forecast['low']), unit_system['temp'] == 'C')) if 'low' in forecast.keys() else ''
                     except ValueError:
                         pass
                 except IndexError:
@@ -180,17 +180,17 @@ def __format(location, yql_weather_results, unit_system):
                     forecast_tomorrow += ' '
                     forecast_tomorrow += 'high of'
                     forecast_tomorrow += ' '
-                    forecast_tomorrow += '{0}{1}'.format(forecast['high'], unit_system['temperature']) if 'high' in forecast.keys() else 'N/A'
+                    forecast_tomorrow += '{0}{1}'.format(forecast['high'], unit_system['temp']) if 'high' in forecast.keys() else 'N/A'
                     try:
-                        forecast_tomorrow += '{0}'.format(__temp_emoji(int(forecast['high']), unit_system['temperature'] == 'C')) if 'high' in forecast.keys() else ''
+                        forecast_tomorrow += '{0}'.format(__temp_emoji(int(forecast['high']), unit_system['temp'] == 'C')) if 'high' in forecast.keys() else ''
                     except ValueError:
                         pass
                     forecast_tomorrow += ' & '
                     forecast_tomorrow += 'low of'
                     forecast_tomorrow += ' '
-                    forecast_tomorrow += '{0}{1}'.format(forecast['low'], unit_system['temperature']) if 'low' in forecast.keys() else 'N/A'
+                    forecast_tomorrow += '{0}{1}'.format(forecast['low'], unit_system['temp']) if 'low' in forecast.keys() else 'N/A'
                     try:
-                        forecast_tomorrow += '{0}'.format(__temp_emoji(int(forecast['low']), unit_system['temperature'] == 'C')) if 'low' in forecast.keys() else ''
+                        forecast_tomorrow += '{0}'.format(__temp_emoji(int(forecast['low']), unit_system['temp'] == 'C')) if 'low' in forecast.keys() else ''
                     except ValueError:
                         pass
                 except IndexError:
@@ -211,17 +211,17 @@ def __format(location, yql_weather_results, unit_system):
                     forecast_threeday += ' '
                     forecast_threeday += 'High of'
                     forecast_threeday += ' '
-                    forecast_threeday += '{0}{1}'.format(forecast['high'], unit_system['temperature']) if 'high' in forecast.keys() else 'N/A'
+                    forecast_threeday += '{0}{1}'.format(forecast['high'], unit_system['temp']) if 'high' in forecast.keys() else 'N/A'
                     try:
-                        forecast_threeday += '{0}'.format(__temp_emoji(int(forecast['high']), unit_system['temperature'] == 'C')) if 'high' in forecast.keys() else ''
+                        forecast_threeday += '{0}'.format(__temp_emoji(int(forecast['high']), unit_system['temp'] == 'C')) if 'high' in forecast.keys() else ''
                     except ValueError:
                         pass
                     forecast_threeday += ' & '
                     forecast_threeday += 'low of'
                     forecast_threeday += ' '
-                    forecast_threeday += '{0}{1}'.format(forecast['low'], unit_system['temperature']) if 'low' in forecast.keys() else 'N/A'
+                    forecast_threeday += '{0}{1}'.format(forecast['low'], unit_system['temp']) if 'low' in forecast.keys() else 'N/A'
                     try:
-                        forecast_threeday += '{0}'.format(__temp_emoji(int(forecast['low']), unit_system['temperature'] == 'C')) if 'low' in forecast.keys() else ''
+                        forecast_threeday += '{0}'.format(__temp_emoji(int(forecast['low']), unit_system['temp'] == 'C')) if 'low' in forecast.keys() else ''
                     except ValueError:
                         pass
                 except IndexError:
@@ -236,7 +236,7 @@ def __format(location, yql_weather_results, unit_system):
             forecast_today += ' '
             forecast_today += '**Wind Chill:**'
             forecast_today += ' '
-            forecast_today += '{0} {1}'.format(wind['chill'],unit_system['temperature']) if 'chill' in wind else 'N/A'
+            forecast_today += '{0} {1}'.format(wind['chill'],unit_system['temp']) if 'chill' in wind else 'N/A'
             forecast_today += '\n'
         if 'atmosphere' in channel:
             atmosphere = channel['atmosphere']
