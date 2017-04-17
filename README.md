@@ -13,6 +13,8 @@ Create a weather request based on `<location>`.
 
 #### Flags
 flags must be space seperated
+
+
 `-metric` Request weather in metric units.
 
 `-pm` Receive results as a private messsage.
