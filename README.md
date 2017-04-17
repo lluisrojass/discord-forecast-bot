@@ -12,6 +12,7 @@ Invite 4CAST Weather Bot to your server [here](https://discordapp.com/oauth2/aut
 Create a weather request based on `<location>`.
 
 #### Flags
+flags must be space seperated
 `-metric` Request weather in metric units.
 
 `-pm` Receive results as a private messsage.
@@ -20,9 +21,8 @@ Create a weather request based on `<location>`.
 
 ```LiveScript
 >>me
-``` 
+```
 Invoke to receive personalized weather based on saved location (server independent).
 
 # Example
 ![prototype](https://i.gyazo.com/75d89cd86e57a8602c6fccde67386c8f.gif)
-
