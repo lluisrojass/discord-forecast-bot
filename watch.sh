@@ -1,4 +1,5 @@
-/bin/bash
+#/bin/bash
+
 # suppress terminated messages
 (python3 ~/PycharmProjects/weather-bot/src/handler.py &  > /dev/null) 
 
