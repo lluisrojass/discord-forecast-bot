@@ -1,16 +1,16 @@
 #/bin/bash
 
-# suppress terminated messages
-(python3 ~/PycharmProjects/weather-bot/src/handler.py &  > /dev/null) 
+SEARCH=$(ps | egrep '((\w|\.|\d|\-)*\/)+Python ((\w|\.|\d|\-)*\/)+handler.py' | egrep -o '^\d{1,6}')
+if [ ${SEARCH:--1} -lt 0 ]
+then
+	(python3 ~/PycharmProjects/weather-bot/src/handler.py &  > /dev/null) 
+fi
 
 while :
 do 
-	# check if running
-	RUNPID=$(ps | egrep '((\w|\.|\d|\-)*\/)+Python ((\w|\.|\d|\-)*\/)+handler.py' | egrep -o '^\d{1,6} ')
-	if [ ${RUNPID:-1} -gt 1 ]
+	SEARCH=$(ps | egrep '((\w|\.|\d|\-)*\/)+Python ((\w|\.|\d|\-)*\/)+handler.py' | egrep -o '^\d{1,6}')
+	if [ ${SEARCH:-0} -lt 1 ]
 	then
-		echo '(✓) - running'
-	else 
 		echo '(x) - resetting'
 		python3 ~/PycharmProjects/weather-bot/src/handler.py & 
 	fi
