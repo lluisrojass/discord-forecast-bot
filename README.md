@@ -1,4 +1,4 @@
-# Discord Weather Bot (4CAST)
+# 4CAST Weather Bot
 
 ## Invite
 Invite 4CAST Weather Bot to your server [here](https://discordapp.com/oauth2/authorize?client_id=220798987777605632&scope=bot&permissions=52224)
@@ -12,7 +12,9 @@ Invite 4CAST Weather Bot to your server [here](https://discordapp.com/oauth2/aut
 Create a weather request based on `<location>`.
 
 #### Flags
-flags must be space seperated
+*Flags must be space seperated.*
+
+
 `-metric` Request weather in metric units.
 
 `-pm` Receive results as a private messsage.
