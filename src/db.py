@@ -13,7 +13,7 @@ class DatabaseException(Exception):
 def __validate(location):
     for word in location.split(' '):
                 assert word.upper() not in ('SELECT', '*', 'ID', 'LOCATION', 'FROM', 'WHERE', 'UPDATE',
-                                            'USER_ID', 'TIMES_REQUESTED', 'NAME', 'UNITS')
+                                            'USER_ID', 'NAME', 'UNITS')
 
 def add_preference(location, is_metric, name, user_id):
     con = s.connect(DB_NAME)

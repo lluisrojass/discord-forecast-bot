@@ -4,22 +4,23 @@
 import logging
 import sys
 from os.path import abspath, dirname
-from os import getcwd
 from discord.ext.commands import Bot
 
 from hide_token import get_token  # to hide token from public github
 from db import get_preference, add_preference, DatabaseException
 from weather import get_forecast, WeatherException
 
+
+
 logger = logging.getLogger('discord.handler')
 logger.setLevel(logging.INFO)
-handler = logging.FileHandler(filename=abspath(dirname(__file__) + '/../logs/discord_info.log'), encoding='utf-8', mode='a')
+handler = logging.FileHandler(filename=abspath(dirname(abspath(__file__)) + '/../logs/discord_info.log'), encoding='utf-8', mode='a')
 handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
 logger.addHandler(handler)
 
 debug_logger = logging.getLogger('discord')
 debug_logger.setLevel(logging.DEBUG)
-debug_handler = logging.FileHandler(filename=abspath(dirname(__file__) + '/../logs/discord_info.log'), encoding='utf-8', mode='w')
+debug_handler = logging.FileHandler(filename=abspath(dirname(abspath(__file__)) + '/../logs/discord_debug.log'), encoding='utf-8', mode='w')
 debug_handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
 debug_logger.addHandler(debug_handler)
 
