@@ -1,1 +1,1 @@
-web: python3 src/handler.py
+worker: python3 src/handler.py
