@@ -5,7 +5,7 @@ Invite 4CAST Weather Bot to your server [here](https://discordapp.com/oauth2/aut
 ## Description
 4CAST is a Discord Bot to fetch & provide weather conditions and 3 day forecast. Weather data is provided by Yahoo's [YQL](https://developer.yahoo.com/yql/) weather endpoint. Application implements the [Discord.py](https://github.com/Rapptz/discord.py) API to speak to your guild.
 ## Commands
-
+### >>forecast
 ```LiveScript
 >>forecast <location> [-metric] [-pm] [-save]
 ```
@@ -21,6 +21,7 @@ Create a weather request based on `<location>`.
 
 `-save` Save this request for expedited requesting with a `>>me` command.
 
+### >>me
 ```LiveScript
 >>me
 ```
