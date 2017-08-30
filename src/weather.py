@@ -264,6 +264,11 @@ def __format(location, yql_weather_results, unit_system):
     return '{0}{1}{5}\n{2}{5}\n{3}{5}\n{4}\n'.format(message_title, current_conditions, forecast_today, forecast_tomorrow, forecast_threeday, ':heavy_minus_sign:')
 
 def get_forecast(location, is_metric):
+    try:
+        location = __verify(location)
+    except AssertionError:
+        raise WeatherException('Bad Location Identifier')
+
     units = unit_system['metric'] if is_metric else unit_system['imperial']
     try:
         results = __get(location, is_metric)
