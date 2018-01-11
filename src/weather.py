@@ -265,11 +265,14 @@ def __format(location, yql_weather_results, unit_system):
 
 def get_forecast(location, is_metric):
     try:
-        location = __verify(location)
+         __verify(location)
     except AssertionError:
         raise WeatherException('Bad Location Identifier')
 
     units = unit_system['metric'] if is_metric else unit_system['imperial']
+
+    print(location)
+
     try:
         results = __get(location, is_metric)
     except (requests.ConnectionError, KeyError) as e:

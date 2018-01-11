@@ -36,7 +36,7 @@ async def on_ready():
 
 
 @bot.command(enabled=True, pass_context=True,)
-async def forecast(ctx, *input_string: tuple):
+async def forecast(ctx, *input_string):
     location = ''
     weather_msg = ''
     notifications = []
